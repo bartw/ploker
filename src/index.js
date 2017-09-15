@@ -5,4 +5,13 @@ connection.on("send", data => {
   console.log(data);
 });
 
-connection.start().then(() => connection.invoke("send", "Hello"));
+const send = value => connection.invoke("send", value);
+
+connection.start().then(() => send(""));
+
+const registerClickFor = id => document.getElementById(id).addEventListener("click", () => send(id));
+
+registerClickFor("one");
+registerClickFor("two");
+registerClickFor("three");
+registerClickFor("five");
