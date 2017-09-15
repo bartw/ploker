@@ -1,0 +1,20 @@
+{
+  "name": "ploker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "Bart Wijnants",
+  "license": "MIT",
+  "dependencies": {
+    "@aspnet/signalr-client": "^1.0.0-alpha1-final"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^3.6.0"
+  }
+}
