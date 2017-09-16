@@ -1,5 +1,5 @@
 import * as signalR from "@aspnet/signalr-client";
-let connection = new signalR.HubConnection("/table");
+let connection = new signalR.HubConnection("/croupier");
 
 connection.on("send", data => {
   console.log(data);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Ploker
+namespace Ploker.Server
 {
     public class Startup
     {
@@ -30,7 +30,7 @@ namespace Ploker
             app.UseStaticFiles();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<Table>("table");
+                routes.MapHub<Croupier>("croupier");
             });
         }
     }

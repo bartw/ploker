@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Ploker
+namespace Ploker.Server
 {
-    public class Table : Hub
+    public class Croupier : Hub
     {
         private static readonly Dictionary<string, string> hands = new Dictionary<string, string>();
 
