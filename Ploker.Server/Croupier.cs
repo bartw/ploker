@@ -15,11 +15,11 @@ namespace Ploker.Server
         {
             var player = Context.ConnectionId;
             _table.AddPlayer(Context.ConnectionId);
-            
-            int handValue;
-            if (int.TryParse(value, out handValue))
+
+            int hand;
+            if (int.TryParse(value, out hand))
             {
-                _table.SetHandFor(player, handValue);
+                _table.SetHandFor(player, hand);
             }
 
             return Clients.All.InvokeAsync("Send", _table.GetStatus());

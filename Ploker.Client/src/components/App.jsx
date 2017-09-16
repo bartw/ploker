@@ -26,7 +26,7 @@ export default class App extends React.Component {
   render() {
     const players = this.state.players.map(p => (
       <li key={p.Name}>
-        {p.Name}: {p.value}
+        {p.Name}: {p.Hand}
       </li>
     ));
     return (
@@ -48,11 +48,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-/*
-    <h1>Ploker</h1>
-    <button id="1">1</button>
-    <button id="2">2</button>
-    <button id="3">3</button>
-    <button id="5">5</button>
-*/
