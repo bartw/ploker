@@ -32,6 +32,10 @@ namespace Ploker.Server
             {
                 _table.SetHandFor(Context.ConnectionId, hand);
             }
+            else if (string.IsNullOrEmpty(value))
+            {
+                _table.SetHandFor(Context.ConnectionId, null);
+            }
 
             return Clients.All.InvokeAsync("Status", _table.GetStatus());
         }

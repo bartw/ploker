@@ -1,6 +1,7 @@
 import * as signalR from "@aspnet/signalr-client";
 import React from "react";
 import Cards from "./Cards";
+import Players from "./Players";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -19,10 +20,11 @@ export default class App extends React.Component {
   }
 
   selectCard = value => {
+
     this.setState(prevState => ({
       selectedCard: prevState.selectedCard === value ? null : value
     }));
-    this.connection.invoke("setHand", value);
+    this.connection.invoke("setHand", this.state.selectedCard === value ? null : value);
   };
 
   dealMeOut = () => this.connection.invoke("dealMeOut");
@@ -30,11 +32,6 @@ export default class App extends React.Component {
   dealMeIn = () => this.connection.invoke("dealMeIn");
 
   render() {
-    const players = this.state.players.map(p => (
-      <li key={p.Name}>
-        {p.Name}: {p.Hand}
-      </li>
-    ));
     return (
       <div className="container">
         <h1>Ploker</h1>
@@ -50,10 +47,7 @@ export default class App extends React.Component {
               <button onClick={this.dealMeOut}>Deal me out</button>
               <button onClick={this.dealMeIn}>Deal me in</button>
             </div>
-            <div>
-              <p>Players</p>
-              {players}
-            </div>
+            <Players players={this.state.players} />
           </div>
         )}
       </div>
