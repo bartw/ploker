@@ -11,7 +11,7 @@ connection.start().then(() => send(""));
 
 const registerClickFor = id => document.getElementById(id).addEventListener("click", () => send(id));
 
-registerClickFor("one");
-registerClickFor("two");
-registerClickFor("three");
-registerClickFor("five");
+registerClickFor("1");
+registerClickFor("2");
+registerClickFor("3");
+registerClickFor("5");

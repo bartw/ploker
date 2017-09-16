@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Ploker.Domain;
 
 namespace Ploker.Server
 {
     public class Croupier : Hub
     {
-        private static readonly Dictionary<string, string> hands = new Dictionary<string, string>();
+        private static readonly Table _table = new Table();
 
         public Task Send(string value)
         {
-            hands[Context.ConnectionId] = value;
+            var player = Context.ConnectionId;
+            _table.AddPlayer(Context.ConnectionId);
+            
+            int handValue;
+            if (int.TryParse(value, out handValue))
+            {
+                _table.SetHandFor(player, handValue);
+            }
 
-            if (hands.All(hand => !string.IsNullOrWhiteSpace(hand.Value)))
-            {
-                return Clients.All.InvokeAsync("Send", hands);
-            }
-            else
-            {
-                return Clients.All.InvokeAsync("Send", hands.ToDictionary(hand => hand.Key, hand => ""));
-            }
+            return Clients.All.InvokeAsync("Send", _table.GetStatus());
         }
     }
 }
