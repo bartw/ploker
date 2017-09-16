@@ -3,12 +3,9 @@ mono: none
 dotnet: 2.0.0
 dist: trusty
 install:
- - dotnet restore ./Ploker.Domain.Test
  - nvm install 8.5.0
  - nvm use 8.5.0
- - cd Ploker.Client
- - npm install
- - cd ..
+ - sh install.sh
 script:
  - dotnet test ./Ploker.Domain.Test
 after_success:
