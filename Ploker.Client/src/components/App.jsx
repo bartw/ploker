@@ -10,7 +10,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.connection = new signalR.HubConnection("/croupier");
-    this.connection.on("send", players => {
+    this.connection.on("status", players => {
       this.setState(() => ({ players: players }));
     });
     this.connection
@@ -22,8 +22,12 @@ export default class App extends React.Component {
     this.setState(prevState => ({
       selectedCard: prevState.selectedCard === value ? null : value
     }));
-    this.connection.invoke("send", value);
+    this.connection.invoke("setHand", value);
   };
+
+  dealMeOut = () => this.connection.invoke("dealMeOut");
+
+  dealMeIn = () => this.connection.invoke("dealMeIn");
 
   render() {
     const players = this.state.players.map(p => (
@@ -43,8 +47,8 @@ export default class App extends React.Component {
               selectCard={this.selectCard}
             />
             <div>
-              <p>Selected card:</p>
-              <p>{this.state.selectedCard}</p>
+              <button onClick={this.dealMeOut}>Deal me out</button>
+              <button onClick={this.dealMeIn}>Deal me in</button>
             </div>
             <div>
               <p>Players</p>

@@ -15,17 +15,17 @@ namespace Ploker.Server
         {
             _table.AddPlayer(Context.ConnectionId);
             base.OnConnectedAsync();
-            return Clients.All.InvokeAsync("Send", _table.GetStatus());
+            return Clients.All.InvokeAsync("Status", _table.GetStatus());
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
             _table.RemovePlayer(Context.ConnectionId);
             base.OnDisconnectedAsync(exception);
-            return Clients.All.InvokeAsync("Send", _table.GetStatus());
+            return Clients.All.InvokeAsync("Status", _table.GetStatus());
         }
 
-        public Task Send(string value)
+        public Task SetHand(string value)
         {
             int hand;
             if (int.TryParse(value, out hand))
@@ -33,7 +33,19 @@ namespace Ploker.Server
                 _table.SetHandFor(Context.ConnectionId, hand);
             }
 
-            return Clients.All.InvokeAsync("Send", _table.GetStatus());
+            return Clients.All.InvokeAsync("Status", _table.GetStatus());
+        }
+
+        public Task DealMeOut()
+        {
+            _table.DealOut(Context.ConnectionId);
+            return Clients.All.InvokeAsync("Status", _table.GetStatus());
+        }
+
+        public Task DealMeIn()
+        {
+            _table.DealIn(Context.ConnectionId);
+            return Clients.All.InvokeAsync("Status", _table.GetStatus());
         }
     }
 }

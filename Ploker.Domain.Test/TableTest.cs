@@ -11,8 +11,7 @@ namespace Ploker.Domain.Test
         public void GivenANewTable_WhenGetStatus_ThenAnEmptyStatusIsReturned()
         {
             var table = new Table();
-            var status = table.GetStatus();
-            status.Should().BeEmpty();
+            table.GetStatus().Should().BeEmpty();
         }
 
         [Fact]
@@ -70,8 +69,29 @@ namespace Ploker.Domain.Test
             table.AddPlayer("Phil");
             table.GetStatus().Should().HaveCount(1);
             table.RemovePlayer("Phil");
-            var status = table.GetStatus();
             table.GetStatus().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void GivenATableWithAPlayer_WhenDealOutThatPlayer_ThenStatusShowsNoPlayers()
+        {
+            var table = new Table();
+            table.AddPlayer("Phil");
+            table.GetStatus().Should().HaveCount(1);
+            table.DealOut("Phil");
+            table.GetStatus().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void GivenATableWithAPlayerThatIsDealtOut_WhenDealInThatPlayer_ThenStatusShowsOnePlayer()
+        {
+            var table = new Table();
+            table.AddPlayer("Phil");
+            table.DealOut("Phil");
+            table.GetStatus().Should().BeEmpty();
+            table.DealIn("Phil");
+            table.GetStatus().Should().HaveCount(1);
+            
         }
     }
 }

@@ -9,10 +9,13 @@ namespace Ploker.Domain
         public string Name { get; private set; }
         public int? Hand { get; set; }
 
+        public bool DealtIn { get; set; }
+
         public Player(string name)
         {
             Name = name;
             Hand = null;
+            DealtIn = true;
         }
     }
 
@@ -69,6 +72,16 @@ namespace Ploker.Domain
             {
                 _players.Remove(toRemove);
             }
+        }
+
+        public void DealOut(string player)
+        {
+            RemovePlayer(player);
+        }
+
+        public void DealIn(string player)
+        {
+            AddPlayer(player);
         }
     }
 }
