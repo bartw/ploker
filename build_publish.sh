@@ -1,3 +1,4 @@
+rm -rf ./dist
 cd Ploker.Client
 npm install
 npm run build

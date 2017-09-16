@@ -2,6 +2,9 @@ language: csharp
 mono: none
 dotnet: 2.0.0
 dist: trusty
+sudo: required
+service:
+ - docker
 install:
  - nvm install 8.5.0
  - nvm use 8.5.0
@@ -9,4 +12,5 @@ install:
 script:
  - dotnet test ./Ploker.Domain.Test
 after_success:
- - sh build.sh 
+ - sh build_publish.sh 
+ - sh docker.sh
