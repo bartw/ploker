@@ -1,0 +1,8 @@
+language: csharp
+mono: none
+dotnet: 2.0.0
+dist: trusty
+install:
+ - dotnet restore ./Ploker.Domain.Test
+script:
+ - dotnet test ./Ploker.Domain.Test
