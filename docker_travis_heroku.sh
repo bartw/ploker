@@ -1,3 +1,4 @@
+echo $DOCKER_USERNAME
 cp ./Dockerfile ./dist
 cd dist
 docker build -t bartw/ploker:$TRAVIS_BUILD_NUMBER .
