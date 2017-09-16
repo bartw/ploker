@@ -62,5 +62,16 @@ namespace Ploker.Domain.Test
             status.Should().Contain(p => p.Name == "Phil" && p.Hand == "3");
             status.Should().Contain(p => p.Name == "Daniel" && p.Hand == "5");
         }
+
+        [Fact]
+        public void GivenATableWithAPlayer_WhenRemoveThatPlayer_ThenStatusShowsNoPlayers()
+        {
+            var table = new Table();
+            table.AddPlayer("Phil");
+            table.GetStatus().Should().HaveCount(1);
+            table.RemovePlayer("Phil");
+            var status = table.GetStatus();
+            table.GetStatus().Should().BeEmpty();
+        }
     }
 }

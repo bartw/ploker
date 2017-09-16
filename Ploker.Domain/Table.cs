@@ -61,5 +61,14 @@ namespace Ploker.Domain
                 _players.Single(p => p.Name == player).Hand = hand;
             }
         }
+
+        public void RemovePlayer(string player)
+        {
+            var toRemove = _players.Find(p => p.Name == player);
+            if (toRemove != null)
+            {
+                _players.Remove(toRemove);
+            }
+        }
     }
 }

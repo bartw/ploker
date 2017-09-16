@@ -11,15 +11,26 @@ namespace Ploker.Server
     {
         private static readonly Table _table = new Table();
 
+        public override Task OnConnectedAsync()
+        {
+            _table.AddPlayer(Context.ConnectionId);
+            base.OnConnectedAsync();
+            return Clients.All.InvokeAsync("Send", _table.GetStatus());
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            _table.RemovePlayer(Context.ConnectionId);
+            base.OnDisconnectedAsync(exception);
+            return Clients.All.InvokeAsync("Send", _table.GetStatus());
+        }
+
         public Task Send(string value)
         {
-            var player = Context.ConnectionId;
-            _table.AddPlayer(Context.ConnectionId);
-
             int hand;
             if (int.TryParse(value, out hand))
             {
-                _table.SetHandFor(player, hand);
+                _table.SetHandFor(Context.ConnectionId, hand);
             }
 
             return Clients.All.InvokeAsync("Send", _table.GetStatus());
