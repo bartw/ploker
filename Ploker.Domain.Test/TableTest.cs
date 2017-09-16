@@ -22,7 +22,7 @@ namespace Ploker.Domain.Test
             table.AddPlayer("Phil");
             var status = table.GetStatus();
             status.Should().HaveCount(1);
-            status.Should().Contain(new KeyValuePair<string, string>("Phil", ""));
+            status.ShouldBeEquivalentTo(new [] { new PlayerStatus("Phil", "")});
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace Ploker.Domain.Test
             table.AddPlayer("Phil");
             var status = table.GetStatus();
             status.Should().HaveCount(1);
-            status.ContainsKey("Phil").Should().BeTrue();
+            status.ShouldBeEquivalentTo(new [] { new PlayerStatus("Phil", "")});
         }
 
         [Fact]
@@ -45,8 +45,8 @@ namespace Ploker.Domain.Test
             table.SetHandFor("Phil", 3);
             var status = table.GetStatus();
             status.Should().HaveCount(2);
-            status.Should().Contain(new KeyValuePair<string, string>("Phil", "X"));
-            status.Should().Contain(new KeyValuePair<string, string>("Daniel", ""));
+            status.Should().Contain(p => p.Name == "Phil" && p.Hand == "X");
+            status.Should().Contain(p => p.Name == "Daniel" && p.Hand == "");
         }
 
         [Fact]
@@ -59,8 +59,8 @@ namespace Ploker.Domain.Test
             table.SetHandFor("Daniel", 5);
             var status = table.GetStatus();
             status.Should().HaveCount(2);
-            status.Should().Contain(new KeyValuePair<string, string>("Phil", "3"));
-            status.Should().Contain(new KeyValuePair<string, string>("Daniel", "5"));
+            status.Should().Contain(p => p.Name == "Phil" && p.Hand == "3");
+            status.Should().Contain(p => p.Name == "Daniel" && p.Hand == "5");
         }
     }
 }

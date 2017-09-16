@@ -4,37 +4,61 @@ using System.Linq;
 
 namespace Ploker.Domain
 {
+    internal class Player
+    {
+        public string Name { get; private set; }
+        public int? Hand { get; set; }
+
+        public Player(string name)
+        {
+            Name = name;
+            Hand = null;
+        }
+    }
+
+    public class PlayerStatus
+    {
+        public string Name { get; private set; }
+        public string Hand { get; private set; }
+
+        public PlayerStatus(string name, string hand)
+        {
+            Name = name;
+            Hand = hand;
+        }
+    }
+
     public class Table
     {
-        private readonly Dictionary<string, int?> _players;
+        private readonly List<Player> _players;
 
         public Table()
         {
-            _players = new Dictionary<string, int?>();
+            _players = new List<Player>();
         }
 
-        public IReadOnlyDictionary<string, string> GetStatus()
+        public IEnumerable<PlayerStatus> GetStatus()
         {
-            if (!_players.All(p => p.Value.HasValue))
+            if (_players.All(p => p.Hand.HasValue))
             {
-                return _players.ToDictionary(p => p.Key, p => p.Value.HasValue ? "X" : "");    
+                return _players.Select(p => new PlayerStatus(p.Name, p.Hand.ToString()));
             }
-            return _players.ToDictionary(p => p.Key, p => p.Value.HasValue ? p.Value.ToString() : "");
+            return _players.Select(p => new PlayerStatus(p.Name, p.Hand.HasValue ? "X" : ""));
         }
 
         public void AddPlayer(string name)
         {
-            if (!_players.ContainsKey(name))
+            if (!_players.Any(p => p.Name == name))
             {
-                _players.Add(name, null);
+                _players.Add(new Player(name));
             }
         }
 
-        public void SetHandFor(string player, int? value)
+        public void SetHandFor(string player, int? hand)
         {
-            if (_players.ContainsKey(player))
+            if (_players.Any(p => p.Name == player))
             {
-                _players[player] = value;
+                _players.Single(p => p.Name == player).Hand = hand;
             }
         }
     }

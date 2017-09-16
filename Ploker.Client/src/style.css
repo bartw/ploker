@@ -1,0 +1,42 @@
+html {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+}
+
+.container {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+ul.cards li {
+  display: inline-block;
+}
+
+div.card {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 5px;
+  width: 100px;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+div.card.selected {
+  color: green;
+}

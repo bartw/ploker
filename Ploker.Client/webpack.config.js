@@ -8,9 +8,11 @@ module.exports = {
     filename: "bundle.js",
     path: path.resolve(__dirname, "../Ploker.Server/wwwroot")
   },
+  resolve: { extensions: [".jsx", ".js"] },
   module: {
-    loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+    rules: [
+      { test: /\.jsx?$/, exclude: /node_modules/, use: "babel-loader" },
+      { test: /\.css$/, use: ["style-loader", "css-loader"] }
     ]
   },
   plugins: [new CopyWebpackPlugin([{ from: "src/index.html" }])]
