@@ -2,4 +2,4 @@ cd Ploker.Client
 npm install
 cd ..
 dotnet restore ./Ploker.Domain.Test
-dotnet restore ./Ploker.Domain.Server
+dotnet restore ./Ploker.Server
