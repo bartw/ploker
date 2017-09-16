@@ -1,4 +1,5 @@
 FROM microsoft/aspnetcore
+ENV PORT="5001"
 WORKDIR /app
 COPY . .
-ENTRYPOINT ["dotnet", "Ploker.Server.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet Ploker.Server.dll

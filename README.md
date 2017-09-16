@@ -17,8 +17,10 @@ cd ploker
 sh install.sh
 sh build_publish.sh
 sh docker.sh
-docker run -d -p 8000:80 ploker
+docker run -d -p 5001:5001 ploker
 ```
+
+Browse to http://localhost:5001
 
 ## License
 
