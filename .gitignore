@@ -3,3 +3,4 @@ bin
 .vscode
 node_modules
 bundle.js
+dist
