@@ -43,3 +43,11 @@ div.card.selected {
   color: green;
   border: 3px solid green;
 }
+
+div.actions {
+  margin: 10px 0;
+}
+
+.actions button {
+  margin-right: 5px;
+}
