@@ -12,7 +12,7 @@ export default class Table extends React.Component {
       const me = players.find(
         p => p.Name === this.props.croupier.getPlayerName()
       );
-      if (me && !me.Hand) {
+      if (!me || !me.Hand) {
         this.setState(() => ({ selectedCard: null }));
       }
       this.setState(() => ({ players: players }));
