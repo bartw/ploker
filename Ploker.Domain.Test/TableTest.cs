@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using FluentAssertions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ploker.Domain.Test
 {
@@ -90,8 +91,20 @@ namespace Ploker.Domain.Test
             table.DealOut("Phil");
             table.GetStatus().Should().BeEmpty();
             table.DealIn("Phil");
-            table.GetStatus().Should().HaveCount(1);
-            
+            table.GetStatus().Should().HaveCount(1);   
+        }
+
+        [Fact]
+        public void GivenATableWithSomePlayersWithSomeHands_WhenReset_ThenStatusShowsNoHands()
+        {
+            var table = new Table();
+            table.AddPlayer("Phil");
+            table.AddPlayer("Daniel");
+            table.SetHandFor("Phil", 3);
+            table.SetHandFor("Daniel", 5);
+            table.GetStatus().Where(p => !string.IsNullOrWhiteSpace(p.Hand)).Should().HaveCount(2);
+            table.Reset();
+            table.GetStatus().Where(p => !string.IsNullOrWhiteSpace(p.Hand)).Should().BeEmpty();
         }
     }
 }

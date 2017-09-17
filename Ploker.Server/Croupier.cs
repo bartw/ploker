@@ -13,42 +13,56 @@ namespace Ploker.Server
 
         public override Task OnConnectedAsync()
         {
-            _table.AddPlayer(Context.ConnectionId);
-            base.OnConnectedAsync();
-            return Clients.All.InvokeAsync("Status", _table.GetStatus());
+            return ActAndReportStatus(() =>
+            {
+                _table.AddPlayer(Context.ConnectionId);
+                base.OnConnectedAsync();
+            });
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _table.RemovePlayer(Context.ConnectionId);
-            base.OnDisconnectedAsync(exception);
-            return Clients.All.InvokeAsync("Status", _table.GetStatus());
+            return ActAndReportStatus(() =>
+            {
+                _table.RemovePlayer(Context.ConnectionId);
+                base.OnDisconnectedAsync(exception);
+            });
         }
 
         public Task SetHand(string value)
         {
-            int hand;
-            if (int.TryParse(value, out hand))
+            return ActAndReportStatus(() =>
             {
-                _table.SetHandFor(Context.ConnectionId, hand);
-            }
-            else if (string.IsNullOrEmpty(value))
-            {
-                _table.SetHandFor(Context.ConnectionId, null);
-            }
-
-            return Clients.All.InvokeAsync("Status", _table.GetStatus());
+                int hand;
+                if (int.TryParse(value, out hand))
+                {
+                    _table.SetHandFor(Context.ConnectionId, hand);
+                }
+                else if (string.IsNullOrEmpty(value))
+                {
+                    _table.SetHandFor(Context.ConnectionId, null);
+                }
+            });
         }
 
         public Task DealMeOut()
         {
-            _table.DealOut(Context.ConnectionId);
-            return Clients.All.InvokeAsync("Status", _table.GetStatus());
+            return ActAndReportStatus(() => _table.DealOut(Context.ConnectionId));
         }
 
         public Task DealMeIn()
         {
-            _table.DealIn(Context.ConnectionId);
+            return ActAndReportStatus(() => _table.DealIn(Context.ConnectionId));
+        }
+
+        public Task Reset()
+        {
+            return ActAndReportStatus(_table.Reset);
+        }
+
+        private Task ActAndReportStatus(Action action)
+        {
+            action.Invoke();
             return Clients.All.InvokeAsync("Status", _table.GetStatus());
         }
     }

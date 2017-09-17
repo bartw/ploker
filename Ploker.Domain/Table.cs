@@ -8,7 +8,6 @@ namespace Ploker.Domain
     {
         public string Name { get; private set; }
         public int? Hand { get; set; }
-
         public bool DealtIn { get; set; }
 
         public Player(string name)
@@ -16,6 +15,11 @@ namespace Ploker.Domain
             Name = name;
             Hand = null;
             DealtIn = true;
+        }
+
+        public void Fold()
+        {
+            Hand = null;
         }
     }
 
@@ -82,6 +86,11 @@ namespace Ploker.Domain
         public void DealIn(string player)
         {
             AddPlayer(player);
+        }
+
+        public void Reset()
+        {
+            _players.ForEach(p => p.Fold());
         }
     }
 }
