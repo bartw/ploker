@@ -9,6 +9,7 @@ namespace Ploker.Server
 {
     public class Croupier : Hub
     {
+        private static readonly Casino _casino = new Casino();
         private static readonly Table _table = new Table();
 
         public override Task OnConnectedAsync()
