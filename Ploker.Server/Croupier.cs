@@ -88,6 +88,10 @@ namespace Ploker.Server
         private Task Report()
         {
             var tables = _casino.GetTablesFor(Context.ConnectionId);
+            if (!tables.Any())
+            {
+                return Clients.Client(Context.ConnectionId).InvokeAsync("Status", "");
+            }
             var tasks = tables.Select(table => Clients.Group(table.ToString()).InvokeAsync("Status", _casino.GetTable(table).GetStatus()));
             return Task.WhenAll(tasks);
         }

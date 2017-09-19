@@ -7,13 +7,26 @@ export default class Casino extends React.Component {
     this.state = { selectedCard: null, players: [], id: null, toJoin: "" };
 
     this.props.croupier.setOnStatus(table => {
-      const me = table.Players.find(
-        p => p.Name === this.props.croupier.getPlayerName()
-      );
-      if (!me || !me.Hand || me.SittingOut) {
-        this.setState(() => ({ selectedCard: null }));
+      if (table) {
+        const me = table.Players.find(
+          p => p.Name === this.props.croupier.getPlayerName()
+        );
+        if (!me || !me.Hand || me.SittingOut) {
+          this.setState(() => ({ selectedCard: null }));
+        }
+        this.setState(() => ({ players: table.Players, id: table.Id }));
       }
-      this.setState(() => ({ players: table.Players, id: table.Id }));
+      var tableId = window.location.hash.substr(1);
+
+      if (table && tableId != table.Id) {
+        window.history.pushState(
+          "",
+          "",
+          "#" + table.Id
+        );
+      } else if (!table && tableId) {
+        this.props.croupier.joinTable(tableId);
+      }
     });
   }
 
