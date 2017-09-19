@@ -1,6 +1,6 @@
 import React from "react";
 import Croupier from "../services/Croupier";
-import Table from "./Table";
+import Casino from "./Casino";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ export default class App extends React.Component {
         {this.state.loading ? (
           <div>loading</div>
         ) : (
-          <Table croupier={this.state.croupier} />
+          <Casino croupier={this.state.croupier} />
         )}
       </div>
     );

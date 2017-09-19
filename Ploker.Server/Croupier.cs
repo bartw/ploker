@@ -10,61 +10,86 @@ namespace Ploker.Server
     public class Croupier : Hub
     {
         private static readonly Casino _casino = new Casino();
-        private static readonly Table _table = new Table();
 
         public override Task OnConnectedAsync()
         {
-            return ActAndReportStatus(() =>
-            {
-                _table.AddPlayer(Context.ConnectionId);
-                base.OnConnectedAsync();
-            });
+            Report();
+            return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            return ActAndReportStatus(() =>
+            _casino.RemovePlayer(Context.ConnectionId);
+
+            return base.OnDisconnectedAsync(exception);
+        }
+
+        public Task CreateTable()
+        {
+            return ActAndReportStatus(async () =>
             {
-                _table.RemovePlayer(Context.ConnectionId);
-                base.OnDisconnectedAsync(exception);
+                var id = _casino.CreateTable();
+                var table = _casino.GetTable(id);
+                table.AddPlayer(Context.ConnectionId);
+                await Groups.AddAsync(Context.ConnectionId, id.ToString());
             });
         }
 
-        public Task SetHand(string value)
+        public Task JoinTable(int id)
+        {
+            return ActAndReportStatus(async () =>
+            {
+                var table = _casino.GetTable(id);
+                if (table != null)
+                {
+                    table.AddPlayer(Context.ConnectionId);
+                }
+                await Groups.AddAsync(Context.ConnectionId, id.ToString());
+            });
+        }
+
+        public Task SetHand(int id, string value)
         {
             return ActAndReportStatus(() =>
             {
                 int hand;
                 if (int.TryParse(value, out hand))
                 {
-                    _table.SetHandFor(Context.ConnectionId, hand);
+                    _casino.GetTable(id).SetHandFor(Context.ConnectionId, hand);
                 }
                 else if (string.IsNullOrEmpty(value))
                 {
-                    _table.SetHandFor(Context.ConnectionId, null);
+                    _casino.GetTable(id).SetHandFor(Context.ConnectionId, null);
                 }
             });
         }
 
-        public Task DealMeOut()
+        public Task DealMeOut(int id)
         {
-            return ActAndReportStatus(() => _table.DealOut(Context.ConnectionId));
+            return ActAndReportStatus(() => _casino.GetTable(id).DealOut(Context.ConnectionId));
         }
 
-        public Task DealMeIn()
+        public Task DealMeIn(int id)
         {
-            return ActAndReportStatus(() => _table.DealIn(Context.ConnectionId));
+            return ActAndReportStatus(() => _casino.GetTable(id).DealIn(Context.ConnectionId));
         }
 
-        public Task Reset()
+        public Task Reset(int id)
         {
-            return ActAndReportStatus(_table.Reset);
+            return ActAndReportStatus(_casino.GetTable(id).Reset);
         }
 
         private Task ActAndReportStatus(Action action)
         {
             action.Invoke();
-            return Clients.All.InvokeAsync("Status", _table.GetStatus());
+            return Report();
+        }
+
+        private Task Report()
+        {
+            var tables = _casino.GetTablesFor(Context.ConnectionId);
+            var tasks = tables.Select(table => Clients.Group(table.ToString()).InvokeAsync("Status", _casino.GetTable(table).GetStatus()));
+            return Task.WhenAll(tasks);
         }
     }
 }

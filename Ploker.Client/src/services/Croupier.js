@@ -9,20 +9,28 @@ export default class Croupier {
       connection.on("status", onStatus);
     };
 
-    this.setHand = hand => {
-      connection.invoke("setHand", hand);
+    this.createTable = () => {
+      connection.invoke("createTable");
     };
 
-    this.dealMeOut = () => {
-      connection.invoke("dealMeOut");
+    this.joinTable = id => {
+      connection.invoke("joinTable", id);
+    }
+
+    this.setHand = (id, hand) => {
+      connection.invoke("setHand", id, hand);
     };
 
-    this.dealMeIn = () => {
-      connection.invoke("dealMeIn");
+    this.dealMeOut = id => {
+      connection.invoke("dealMeOut", id);
     };
 
-    this.reset = () => {
-      connection.invoke("reset");
+    this.dealMeIn = id => {
+      connection.invoke("dealMeIn", id);
+    };
+
+    this.reset = id => {
+      connection.invoke("reset", id);
     };
 
     this.getPlayerName = () => connection.connection.connectionId;

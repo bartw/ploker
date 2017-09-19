@@ -26,7 +26,7 @@ namespace Ploker.Domain
                 id = new Random().Next(10000, 99999);
             } while (_tables.ContainsKey(id));
 
-            _tables.Add(id, new Table());
+            _tables.Add(id, new Table(id));
             return id;
         }
 
@@ -39,12 +39,15 @@ namespace Ploker.Domain
             return null;
         }
 
-        public void RemoveTable(int id)
+        public void RemovePlayer(string name)
         {
-            if (_tables.ContainsKey(id))
-            {
-                _tables.Remove(id);
-            }
+            _tables.Values.ToList().ForEach(t => t.RemovePlayer(name));
+            _tables.Where(kvp => kvp.Value.IsEmpty()).Select(kvp => kvp.Key).ToList().ForEach(id => _tables.Remove(id));
+        }
+
+        public IEnumerable<int> GetTablesFor(string name)
+        {
+            return _tables.Where(kvp => kvp.Value.HasPlayer(name)).Select(kvp => kvp.Key).ToList();
         }
     }
 }

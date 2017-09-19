@@ -51,23 +51,53 @@ namespace Ploker.Domain.Test
         }
 
         [Fact]
-        public void GivenACasinoWithATable_WhenRemoveTable_ThenThatTableIsRemoved()
+        public void GivenACasinoWithATableWithOnePlayer_WhenRemovePlayer_ThenThatTableIsRemoved()
         {
             var casino = new Casino();
             var id = casino.CreateTable();
-            casino.RemoveTable(id);
             var table = casino.GetTable(id);
-            table.Should().BeNull();
+            table.AddPlayer("Phil");
+            casino.RemovePlayer("Phil");
+            casino.GetTable(id).Should().BeNull();
         }
 
         [Fact]
-        public void GivenACasino_WhenRemoveTableThatDoesNotExist_ThenNothingHappens()
+        public void GivenACasino_WhenRemovePlayerThatDoesNotExist_ThenNothingHappens()
         {
             var casino = new Casino();
             var id = casino.CreateTable();
-            casino.RemoveTable(id + 1);
+            casino.GetTable(id).AddPlayer("Daniel");
+            casino.RemovePlayer("Phil");
             var table = casino.GetTable(id);
             table.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void GivenACasinoWithATableWithMultiplePlayers_WhenRemovePlayer_ThenThePlayerIsRemovedButNotTheTable()
+        {
+            var casino = new Casino();
+            var id = casino.CreateTable();
+            casino.GetTable(id).AddPlayer("Phil");
+            casino.GetTable(id).AddPlayer("Daniel");
+            casino.RemovePlayer("Phil");
+            var table = casino.GetTable(id);
+            table.Should().NotBeNull();
+            var status = table.GetStatus();
+            status.Players.Should().HaveCount(1);
+            status.Players.Should().Contain(p => p.Name == "Daniel");
+        }
+
+        [Fact]
+        public void GivenACasinoWithSomeTablesWithPlayers_WhenGetTablesForPlayer_ThenTheCorrectTablesAreReturned()
+        {
+            var casino = new Casino();
+            var id1 = casino.CreateTable();
+            var id2 = casino.CreateTable();
+            var id3 = casino.CreateTable();
+            casino.GetTable(id1).AddPlayer("Phil");
+            casino.GetTable(id2).AddPlayer("Daniel");
+            casino.GetTable(id3).AddPlayer("Phil");
+            casino.GetTablesFor("Phil").Should().BeEquivalentTo(new [] {id1, id3});
         }
     }
 }

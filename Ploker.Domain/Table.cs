@@ -23,10 +23,22 @@ namespace Ploker.Domain
         }
     }
 
+    public class TableStatus
+    {
+        public int Id { get; }
+        public IEnumerable<PlayerStatus> Players { get; }
+
+        public TableStatus(int id, IEnumerable<PlayerStatus> players)
+        {
+            Id = id;
+            Players = players;
+        }
+    }
+
     public class PlayerStatus
     {
-        public string Name { get; private set; }
-        public string Hand { get; private set; }
+        public string Name { get; }
+        public string Hand { get; }
 
         public PlayerStatus(string name, string hand)
         {
@@ -37,20 +49,22 @@ namespace Ploker.Domain
 
     public class Table
     {
+        private readonly int _id;
         private readonly List<Player> _players;
 
-        public Table()
+        public Table(int id)
         {
+            _id = id;
             _players = new List<Player>();
         }
 
-        public IEnumerable<PlayerStatus> GetStatus()
+        public TableStatus GetStatus()
         {
             if (_players.All(p => p.Hand.HasValue))
             {
-                return _players.Select(p => new PlayerStatus(p.Name, p.Hand.ToString()));
+                return new TableStatus(_id, _players.Select(p => new PlayerStatus(p.Name, p.Hand.ToString())));
             }
-            return _players.Select(p => new PlayerStatus(p.Name, p.Hand.HasValue ? "X" : ""));
+            return new TableStatus(_id, _players.Select(p => new PlayerStatus(p.Name, p.Hand.HasValue ? "X" : "")));
         }
 
         public void AddPlayer(string name)
@@ -59,6 +73,11 @@ namespace Ploker.Domain
             {
                 _players.Add(new Player(name));
             }
+        }
+
+        internal bool HasPlayer(string name)
+        {
+            return _players.Any(p => p.Name == name);
         }
 
         public void SetHandFor(string player, int? hand)
@@ -91,6 +110,11 @@ namespace Ploker.Domain
         public void Reset()
         {
             _players.ForEach(p => p.Fold());
+        }
+
+        public bool IsEmpty()
+        {
+            return _players.Count == 0;
         }
     }
 }
