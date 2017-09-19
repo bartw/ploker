@@ -8,13 +8,13 @@ namespace Ploker.Domain
     {
         public string Name { get; private set; }
         public int? Hand { get; set; }
-        public bool DealtIn { get; set; }
+        public bool SittingOut { get; set; }
 
         public Player(string name)
         {
             Name = name;
             Hand = null;
-            DealtIn = true;
+            SittingOut = false;
         }
 
         public void Fold()
@@ -39,11 +39,13 @@ namespace Ploker.Domain
     {
         public string Name { get; }
         public string Hand { get; }
+        public bool SittingOut { get; }
 
-        public PlayerStatus(string name, string hand)
+        public PlayerStatus(string name, string hand, bool sittingOut)
         {
             Name = name;
             Hand = hand;
+            SittingOut = sittingOut;
         }
     }
 
@@ -60,11 +62,17 @@ namespace Ploker.Domain
 
         public TableStatus GetStatus()
         {
+            var GetHand = GetHandFunc();
+            return new TableStatus(_id, _players.Select(p => new PlayerStatus(p.Name, GetHand(p), p.SittingOut)));
+        }
+
+        private Func<Player, string> GetHandFunc()
+        {
             if (_players.All(p => p.Hand.HasValue))
             {
-                return new TableStatus(_id, _players.Select(p => new PlayerStatus(p.Name, p.Hand.ToString())));
+                return p => p.Hand.ToString();
             }
-            return new TableStatus(_id, _players.Select(p => new PlayerStatus(p.Name, p.Hand.HasValue ? "X" : "")));
+            return p => p.Hand.HasValue ? "X" : "";
         }
 
         public void AddPlayer(string name)
@@ -99,12 +107,21 @@ namespace Ploker.Domain
 
         public void DealOut(string player)
         {
-            RemovePlayer(player);
+            var toDealOut = _players.Find(p => p.Name == player);
+            if (toDealOut != null)
+            {
+                toDealOut.Fold();
+                toDealOut.SittingOut = true;
+            }
         }
 
         public void DealIn(string player)
         {
-            AddPlayer(player);
+            var toDealIn = _players.Find(p => p.Name == player);
+            if (toDealIn != null)
+            {
+                toDealIn.SittingOut = false;
+            }
         }
 
         public void Reset()

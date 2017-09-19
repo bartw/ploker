@@ -10,7 +10,7 @@ export default class Casino extends React.Component {
       const me = table.Players.find(
         p => p.Name === this.props.croupier.getPlayerName()
       );
-      if (!me || !me.Hand) {
+      if (!me || !me.Hand || me.SittingOut) {
         this.setState(() => ({ selectedCard: null }));
       }
       this.setState(() => ({ players: table.Players, id: table.Id }));
@@ -38,6 +38,10 @@ export default class Casino extends React.Component {
   onChangeToJoin = event => this.setState({ toJoin: event.target.value });
 
   render() {
+    const me = this.state.players.find(
+      p => p.Name === this.props.croupier.getPlayerName()
+    );
+    const sittingOut = me && me.SittingOut;
     return (
       <div>
         {this.state.id && (
@@ -49,6 +53,7 @@ export default class Casino extends React.Component {
             dealMeIn={this.dealMeIn}
             reset={this.reset}
             players={this.state.players}
+            sittingOut={sittingOut}
           />
         )}
         {!this.state.id && (

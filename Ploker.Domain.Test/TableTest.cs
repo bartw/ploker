@@ -29,7 +29,7 @@ namespace Ploker.Domain.Test
             table.AddPlayer("Phil");
             var status = table.GetStatus();
             status.Players.Should().HaveCount(1);
-            status.Players.ShouldBeEquivalentTo(new [] { new PlayerStatus("Phil", "")});
+            status.Players.ShouldBeEquivalentTo(new [] { new PlayerStatus("Phil", "", false)});
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace Ploker.Domain.Test
             table.AddPlayer("Phil");
             var status = table.GetStatus();
             status.Players.Should().HaveCount(1);
-            status.Players.ShouldBeEquivalentTo(new [] { new PlayerStatus("Phil", "")});
+            status.Players.ShouldBeEquivalentTo(new [] { new PlayerStatus("Phil", "", false)});
         }
 
         [Fact]
@@ -81,24 +81,31 @@ namespace Ploker.Domain.Test
         }
 
         [Fact]
-        public void GivenATableWithAPlayer_WhenDealOutThatPlayer_ThenStatusShowsNoPlayers()
+        public void GivenATableWithAPlayerWithAHand_WhenDealOutThatPlayer_ThenStatusShowsPlayerAsSittingOutWithoutAHand()
         {
             var table = new Table(1);
             table.AddPlayer("Phil");
+            table.SetHandFor("Phil", 3);
             table.GetStatus().Players.Should().HaveCount(1);
+            table.GetStatus().Players.First().SittingOut.Should().BeFalse();
+            table.GetStatus().Players.First().Hand.Should().Be("3");
             table.DealOut("Phil");
-            table.GetStatus().Players.Should().BeEmpty();
+            table.GetStatus().Players.Should().HaveCount(1);
+            table.GetStatus().Players.First().SittingOut.Should().BeTrue();
+            table.GetStatus().Players.First().Hand.Should().Be("");
         }
 
         [Fact]
-        public void GivenATableWithAPlayerThatIsDealtOut_WhenDealInThatPlayer_ThenStatusShowsOnePlayer()
+        public void GivenATableWithAPlayerThatIsDealtOut_WhenDealInThatPlayer_ThenStatusShowsPlayerAsNotSittingOut()
         {
             var table = new Table(1);
             table.AddPlayer("Phil");
             table.DealOut("Phil");
-            table.GetStatus().Players.Should().BeEmpty();
+            table.GetStatus().Players.Should().HaveCount(1);
+            table.GetStatus().Players.First().SittingOut.Should().BeTrue();
             table.DealIn("Phil");
             table.GetStatus().Players.Should().HaveCount(1);   
+            table.GetStatus().Players.First().SittingOut.Should().BeFalse();
         }
 
         [Fact]
